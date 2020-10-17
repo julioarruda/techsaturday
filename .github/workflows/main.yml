@@ -1,0 +1,27 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ghcr.io
+          username: ${{ secrets.GH_PACKAGES_USER }}
+          password: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+      - name: Build the Docker image
+        run: |
+         docker build . --file Dockerfile --tag ghcr.io/julioarruda/techsaturday:${{ github.sha }}
+         docker tag ghcr.io/julioarruda/techsaturday:${{ github.sha }} ghcr.io/julioarruda/techsaturday:latest
+      
+      - name: Docker Push
+        run: |
+         docker push ghcr.io/julioarruda/techsaturday:${{ github.sha }}
+         docker push ghcr.io/julioarruda/techsaturday:latest
