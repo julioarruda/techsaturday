@@ -25,3 +25,9 @@ jobs:
         run: |
          docker push ghcr.io/julioarruda/techsaturday:${{ github.sha }}
          docker push ghcr.io/julioarruda/techsaturday:latest
+
+      - uses: azure/aks-set-context@v1
+        with:
+            creds: '${{ secrets.AZURE_CREDENTIALS }}' # Azure credentials
+            resource-group: 'rgtechsaturday'
+            cluster-name: 'techsaturday'
